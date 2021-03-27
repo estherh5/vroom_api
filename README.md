@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/estherh5/vroom_api.svg?branch=master)](https://travis-ci.org/estherh5/vroom_api)
+[![Build Status](https://travis-ci.com/estherh5/vroom_api.svg?branch=master)](https://travis-ci.com/estherh5/vroom_api)
 [![codecov](https://codecov.io/gh/estherh5/vroom_api/branch/master/graph/badge.svg)](https://codecov.io/gh/estherh5/vroom_api)
 
 # Vroom
