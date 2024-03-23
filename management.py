@@ -7,7 +7,7 @@ import pathlib
 import subprocess
 
 from crontab import CronTab
-from datetime import date, datetime
+from datetime import datetime, timezone
 
 
 def backup_database():
