@@ -6,7 +6,7 @@ import os
 import subprocess
 
 from crontab import CronTab
-from datetime import date, datetime
+from datetime import datetime, timezone
 
 
 def backup_database():
@@ -71,7 +71,7 @@ parser.add_argument('action', type=str, help="an action for the database")
 args = parser.parse_args()
 if args.action == 'backup_db':
     # Only backup database on Sunday
-    if date.today().weekday() == 6:
+    if datetime.now(timezone.utc).weekday() == 6:
         backup_database()
 if args.action == 'sched_backup':
     schedule_weekly_backup()
