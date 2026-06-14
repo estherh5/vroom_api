@@ -1,4 +1,25 @@
-# python
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Environments
+.env
+.venv/
+venv/
+env/
+
+# Testing
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# macOS
 .DS_Store
-__pycache__
-*.pyc

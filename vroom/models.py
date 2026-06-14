@@ -1,30 +1,38 @@
-import os
+"""ORM models for the Vroom API."""
+from __future__ import annotations
 
-from datetime import datetime
-from sqlalchemy import create_engine, Column, Date, Float, Integer
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.types import TEXT, TIMESTAMP
+from datetime import date, datetime, timezone
+from decimal import Decimal
 
+from sqlalchemy import TIMESTAMP, Date, Float, Text
+from sqlalchemy.orm import Mapped, mapped_column
 
-engine = create_engine(os.environ['DB_CONNECTION'])
-
-Base = declarative_base()
-
-Session = sessionmaker(bind=engine)
+from vroom.db import Base
 
 
-# Booking table for rental car booking information
+def _utcnow() -> datetime:
+    """Current UTC time as a naive datetime, matching the column type."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
 class Booking(Base):
-    __tablename__ = 'booking'
-    id = Column(Integer, primary_key=True)
-    external_id = Column(TEXT, nullable=False)
-    start_date = Column(Date, nullable=False)
-    end_date = Column(Date, nullable=False)
-    location = Column(TEXT, nullable=False)
-    car = Column(TEXT, nullable=False)
-    company_name = Column(TEXT, nullable=False)
-    company_address = Column(TEXT, nullable=False)
-    price = Column(Float(precision=2, asdecimal=True), nullable=False)
-    created = Column(TIMESTAMP(timezone=False), default=datetime.utcnow,
-        nullable=False)
+    """A rental car booking."""
+
+    __tablename__ = "booking"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    external_id: Mapped[str] = mapped_column(Text, nullable=False)
+    start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    end_date: Mapped[date] = mapped_column(Date, nullable=False)
+    location: Mapped[str] = mapped_column(Text, nullable=False)
+    car: Mapped[str] = mapped_column(Text, nullable=False)
+    company_name: Mapped[str] = mapped_column(Text, nullable=False)
+    company_address: Mapped[str] = mapped_column(Text, nullable=False)
+    # Float(asdecimal=True) keeps the existing column type (see the Alembic
+    # migration) while returning Decimal values for accurate money formatting.
+    price: Mapped[Decimal] = mapped_column(
+        Float(precision=2, asdecimal=True), nullable=False
+    )
+    created: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=False), default=_utcnow, nullable=False
+    )
