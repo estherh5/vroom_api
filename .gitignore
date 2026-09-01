@@ -23,3 +23,7 @@ htmlcov/
 
 # macOS
 .DS_Store
+
+# Vercel CLI link metadata -- never commit
+.vercel/
+.vercel
