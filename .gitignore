@@ -8,7 +8,7 @@ dist/
 
 # Environments
 .env
-.venv/
+.venv*
 venv/
 env/
 
