@@ -21,3 +21,7 @@ Committed doc, not scratch. Kept current by hand as work ships.
   `https://vroom-api.crystalprism.io/`. **The trailing slash is load-bearing** — `src/api.ts`
   builds its one request as `` `${SERVER_PATH}api/vroom/booking` ``, concatenating directly. A
   Vite env var is baked in at build time, so changing it requires a redeploy, not just a save.
+
+## Next
+
+- [security] **Anonymous booking CRUD has no body-size or rate limit, CORS `*` (Medium).** `vroom/routes.py`: ids are 96-bit capabilities. Fix: `MAX_CONTENT_LENGTH`, a rate limit, and restrict CORS.
