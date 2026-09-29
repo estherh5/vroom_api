@@ -7,6 +7,13 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-09** **Booking API is size-capped, rate-limited and CORS-restricted.** `server.py#create_app`
+  sets `MAX_CONTENT_LENGTH` to 16 KB (413 past it) and allows CORS only from
+  `https://vroom.crystalprism.io` (plus `http://localhost:3000` when `ENV_TYPE=Dev`), replacing `*`.
+  The rate limit lives in the Vercel dashboard, not the repo: a Firewall rule, "Booking per-IP rate
+  limit", caps `/api/vroom/*` at 30 requests/min per IP (fixed window, 429 past it). Proven live:
+  35 requests returned 30 × 404 then 5 × 429.
+
 - **2026-09** **Heroku decommissioned.** The `vroom-api` app and its add-ons were destroyed on
   2026-09-04 after three days of parallel running with zero real traffic. A final pre-destroy dump
   was taken and row-matched against Neon on every table before deletion. Its scheduler add-on held no active job.
@@ -24,4 +31,3 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- [security] **Anonymous booking CRUD has no body-size or rate limit, CORS `*` (Medium).** `vroom/routes.py`: ids are 96-bit capabilities. Fix: `MAX_CONTENT_LENGTH`, a rate limit, and restrict CORS.

@@ -12,13 +12,23 @@ from vroom.routes import bp
 
 load_dotenv()
 
+# A booking is seven short fields; anything near this size is not one.
+MAX_BODY_BYTES = 16 * 1024
+
+# The only browser client. Per-IP request rate is capped at the edge by a
+# Vercel Firewall rule ("Booking per-IP rate limit"), not in this process.
+FRONTEND_ORIGIN = "https://vroom.crystalprism.io"
+DEV_ORIGIN = "http://localhost:3000"
+
 
 def create_app() -> Flask:
     """Build and configure the Flask application."""
     app = Flask(__name__)
     app.config["DEBUG"] = os.environ.get("ENV_TYPE") == "Dev"
+    app.config["MAX_CONTENT_LENGTH"] = MAX_BODY_BYTES
 
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    origins = [FRONTEND_ORIGIN] + ([DEV_ORIGIN] if app.config["DEBUG"] else [])
+    CORS(app, resources={r"/api/*": {"origins": origins}})
 
     # Configure the database engine from DB_CONNECTION (lazy connect).
     get_engine()

@@ -77,3 +77,27 @@ def test_booking_delete_not_found(client: FlaskClient) -> None:
     response = client.delete("/api/vroom/booking/test")
     assert response.status_code == 404
     assert response.get_json() == NOT_FOUND
+
+
+def test_oversized_body_is_rejected(client: FlaskClient) -> None:
+    response = client.post(
+        "/api/vroom/booking",
+        data="x" * (16 * 1024 + 1),
+        content_type="application/json",
+    )
+    assert response.status_code == 413
+
+
+def test_cors_allows_only_the_vroom_frontend(client: FlaskClient) -> None:
+    allowed = client.get(
+        "/api/vroom/booking/x", headers={"Origin": "https://vroom.crystalprism.io"}
+    )
+    assert (
+        allowed.headers.get("Access-Control-Allow-Origin")
+        == "https://vroom.crystalprism.io"
+    )
+
+    other = client.get(
+        "/api/vroom/booking/x", headers={"Origin": "https://evil.example"}
+    )
+    assert "Access-Control-Allow-Origin" not in other.headers
