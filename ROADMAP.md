@@ -7,6 +7,15 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-09** **Pushes to `main` deploy; CI tests what production runs.** The Vercel project is
+  now git-connected (production branch `main`); before this, only `vercel deploy --prod` deployed
+  it, and a push produced no build. CI installs from `uv.lock` with `uv sync --locked`, as the
+  Vercel build does: its old unpinned `pip install -e` pulled SQLAlchemy 2.1, whose default
+  `postgresql://` driver is psycopg 3 (not installed), so every run since 2026-09-28 failed at
+  import. `requires-python` is now `>=3.12`, which drops the lock's Python 3.9 fork that pinned
+  vulnerable urllib3 1.26, python-dotenv 1.2.1 and pytest 8.4; all 7 Dependabot alerts are
+  fixed (urllib3 2.8.0, python-dotenv 1.2.3, pytest 9.1.1).
+
 - **2026-09** **Booking API is size-capped, rate-limited and CORS-restricted.** `server.py#create_app`
   sets `MAX_CONTENT_LENGTH` to 16 KB (413 past it) and allows CORS only from
   `https://vroom.crystalprism.io` (plus `http://localhost:3000` when `ENV_TYPE=Dev`), replacing `*`.

@@ -1,7 +1,7 @@
 """ORM models for the Vroom API."""
 from __future__ import annotations
 
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from decimal import Decimal
 
 from sqlalchemy import TIMESTAMP, Date, Float, Text
@@ -12,7 +12,7 @@ from vroom.db import Base
 
 def _utcnow() -> datetime:
     """Current UTC time as a naive datetime, matching the column type."""
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class Booking(Base):

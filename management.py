@@ -7,7 +7,7 @@ import getpass
 import os
 import pathlib
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import boto3
 from crontab import CronTab
@@ -15,7 +15,7 @@ from crontab import CronTab
 
 def backup_database() -> None:
     """Dump the database and upload the backup to S3."""
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
     file_path = pathlib.Path(os.environ["BACKUP_DIR"]) / now
     file_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -76,7 +76,7 @@ def main() -> None:
 
     if args.action == "backup_db":
         # Only back up the database on Sundays.
-        if datetime.now(timezone.utc).weekday() == 6:
+        if datetime.now(UTC).weekday() == 6:
             backup_database()
     elif args.action == "sched_backup":
         schedule_weekly_backup()

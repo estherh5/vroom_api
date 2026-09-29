@@ -15,11 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      # Install from uv.lock, exactly as the Vercel build does, so CI tests
+      # the dependency versions production actually runs.
+      - name: Set up uv and Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
+          enable-cache: true
 
       - name: Install PostgreSQL (for testing.postgresql)
         run: |
@@ -28,15 +30,13 @@ jobs:
           echo "/usr/lib/postgresql/16/bin" >> "$GITHUB_PATH"
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+        run: uv sync --locked --extra dev
 
       - name: Lint (ruff)
-        run: ruff check .
+        run: uv run ruff check .
 
       - name: Type check (mypy)
-        run: mypy vroom server.py management.py
+        run: uv run mypy vroom server.py management.py
 
       - name: Test (pytest)
-        run: pytest --cov=vroom --cov-report=term-missing
+        run: uv run pytest --cov=vroom --cov-report=term-missing
